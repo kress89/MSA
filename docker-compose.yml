@@ -1,0 +1,27 @@
+version: "3.7"
+
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:latest
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: kreso
+      MYSQL_PASSWORD: kr350
+      MYSQL_ROOT_PASSWORD: r007
+    ports:
+      - 3307:3306
+    volumes:
+      - "mysql-data:/var/lib/mysql"
+    networks:
+      - desktop
+      
+volumes:
+  mysql-data:
+    external: true
+    
+networks:
+  desktop:
+    external: false
+    driver: bridge

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="hr.kreso.api.repo.MediaRepository">
+
+	<resultMap id="mediaResultMap" type="Media">
+		<id property="id" column="id" />
+		<result property="naziv" column="naziv" />
+		<result property="opis" column="opis" />
+		<result property="dodaci" column="dodaci" />
+		<association property="tip" column="tip"
+			javaType="MediaType"
+			select="hr.kreso.api.repo.MediaRepository.dohvatiMediaTypePoId" />
+		<association property="izvor" column="izvor"
+			javaType="MediaSource"
+			select="hr.kreso.api.repo.MediaRepository.dohvatiMediaSourcePoId" />
+	</resultMap>
+
+	<resultMap id="mediaTypeResultMap" type="MediaType">
+		<id property="id" column="id" />
+		<result property="naziv" column="naziv" />
+	</resultMap>
+
+	<resultMap id="mediaSourceResultMap" type="MediaSource">
+		<id property="id" column="id" />
+		<result property="url" column="url" />
+	</resultMap>
+
+	<select id="dohvatiMediaTypePoId" parameterType="Integer"
+		resultMap="mediaTypeResultMap">
+		select * from media_type where id = #{id}
+	</select>
+
+	<select id="dohvatiMediaSourcePoId" parameterType="Integer"
+		resultMap="mediaSourceResultMap">
+		select * from media_source where id = #{id}
+	</select>
+
+	<select id="dohvatiPoId" resultMap="mediaResultMap"
+		parameterType="Integer">
+		select * from
+		media where id = #{id}
+	</select>
+
+	<select id="dohvatiSve" resultMap="mediaResultMap">
+		select * from media
+	</select>
+
+	<select id="dohvatiSveTipove" resultMap="mediaTypeResultMap">
+		select * from media_type
+	</select>
+
+	<select id="dohvatiSveIzvore" resultMap="mediaSourceResultMap">
+		select * from
+		media_source
+	</select>
+
+	<insert id="dodaj" parameterType="Media" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into media (naziv, tip, izvor, opis, dodaci)
+		values
+		(#{naziv}, #{tip.id}, #{izvor.id}, #{opis}, #{dodaci})
+	</insert>
+
+	<select id="dohvatiPoNazivu" resultMap="mediaResultMap">
+		<bind name="pattern" value="'%' + naziv + '%'" />
+		select * from media where naziv like #{pattern}
+	</select>
+</mapper>
